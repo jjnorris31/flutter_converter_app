@@ -10,7 +10,13 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
+
   double _numberForm;
+
+  void initState() {
+    _numberForm = 0;
+    super.initState();
+  }
 
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,7 +38,21 @@ class MyAppState extends State<MyApp> {
             title: Text('Yes, yes, claro que yes'),
           ),
           body: Center(
-            child: TextField(),
+            child: Column(
+              children: [
+                TextField(
+                  onChanged: (text) {
+                    var rv = double.tryParse(text);
+                    if (rv != null) {
+                      setState(() {
+                        _numberForm = rv;
+                      });
+                    }
+                  },
+                ),
+                Text((_numberForm == null) ? '' : _numberForm.toString())
+              ],
+            )
           )
       ),
     );
