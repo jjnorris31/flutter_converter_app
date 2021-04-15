@@ -12,9 +12,17 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
 
   double _numberForm;
+  String _measureForm;
+  List<String> _measures = [
+    'Metros',
+    'Kilómetros',
+    'Millas',
+    'Gramos'
+  ];
 
   void initState() {
     _numberForm = 0;
+    _measureForm = 'Metros';
     super.initState();
   }
 
@@ -38,20 +46,68 @@ class MyAppState extends State<MyApp> {
             title: Text('Yes, yes, claro que yes'),
           ),
           body: Center(
-            child: Column(
-              children: [
-                TextField(
-                  onChanged: (text) {
-                    var rv = double.tryParse(text);
-                    if (rv != null) {
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child:  Column(
+                children: [
+                  Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                        child: Text('Value'),
+                      )
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Escribe una medida',
+                    ),
+                    onChanged: (text) {
+                      var rv = double.tryParse(text);
+                      if (rv != null) {
+                        setState(() {
+                          _numberForm = rv;
+                        });
+                      }
+                    },
+                  ),
+                  Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                        child: Text('From'),
+                      )
+                  ),
+                  DropdownButton(
+                    isExpanded: true,
+                    items: _measures.map((String value) {
+                      return DropdownMenuItem<String>(child: Text(value), value: value,);
+                    }).toList(),
+                    value: _measureForm,
+                    onChanged: (newValue) {
                       setState(() {
-                        _numberForm = rv;
+                        _measureForm = newValue;
                       });
-                    }
-                  },
-                ),
-                Text((_numberForm == null) ? '' : _numberForm.toString())
-              ],
+                    },
+                  ),
+                  Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                        child: Text('To'),
+                      )
+                  ),
+                  DropdownButton(
+                    isExpanded: true,
+                    items: _measures.map((String value) {
+                      return DropdownMenuItem<String>(child: Text(value), value: value,);
+                    }).toList(),
+                    value: _measureForm,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _measureForm = newValue;
+                      });
+                    },
+                  ),
+                  Text((_numberForm == null) ? '' : _numberForm.toString()),
+                ],
+              ),
             )
           )
       ),
