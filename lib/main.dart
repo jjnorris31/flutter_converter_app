@@ -12,18 +12,32 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
 
   double _numberForm;
-  String _measureForm;
+  String _result;
+  String _aMeasureForm;
+  String _bMeasureForm;
   List<String> _measures = [
     'Metros',
     'Kilómetros',
-    'Millas',
-    'Gramos'
   ];
 
   void initState() {
     _numberForm = 0;
-    _measureForm = 'Metros';
+    _aMeasureForm = 'Metros';
     super.initState();
+  }
+
+  double converter() {
+
+    double result = 0.0;
+
+    if (_aMeasureForm == 'Metros' && _bMeasureForm == 'Metros') {
+      result = _numberForm;
+    } else if (_aMeasureForm == 'Metros' && _bMeasureForm == 'Kilómetros') {
+      result = _numberForm * 1000.0;
+    } else if (_aMeasureForm == 'Kilómetros' && _bMeasureForm == 'Metros') {
+     result = _numberForm / 1000.0;
+    }
+    return result;
   }
 
   Widget build(BuildContext context) {
@@ -43,22 +57,17 @@ class MyAppState extends State<MyApp> {
       ),
       home: Scaffold(
           appBar: AppBar(
-            title: Text('Yes, yes, claro que yes'),
+            title: Text('Convertidor de unidades'),
           ),
           body: Center(
             child: Padding(
               padding: EdgeInsets.all(10.0),
               child:  Column(
                 children: [
-                  Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
-                        child: Text('Value'),
-                      )
-                  ),
                   TextField(
                     decoration: InputDecoration(
-                      labelText: 'Escribe una medida',
+                      labelText: 'Valor',
+                      hintText: 'Escribe una medida'
                     ),
                     onChanged: (text) {
                       var rv = double.tryParse(text);
@@ -69,43 +78,57 @@ class MyAppState extends State<MyApp> {
                       }
                     },
                   ),
-                  Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
-                        child: Text('From'),
-                      )
-                  ),
-                  DropdownButton(
+                  DropdownButtonFormField(
                     isExpanded: true,
+                    decoration: InputDecoration(
+                        labelText: 'Valor A'
+                    ),
                     items: _measures.map((String value) {
                       return DropdownMenuItem<String>(child: Text(value), value: value,);
                     }).toList(),
-                    value: _measureForm,
+                    value: _aMeasureForm,
                     onChanged: (newValue) {
                       setState(() {
-                        _measureForm = newValue;
+                        _aMeasureForm = newValue;
                       });
                     },
                   ),
-                  Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
-                        child: Text('To'),
-                      )
-                  ),
-                  DropdownButton(
+                  DropdownButtonFormField(
                     isExpanded: true,
+                    decoration: InputDecoration(
+                      labelText: 'Valor B'
+                    ),
                     items: _measures.map((String value) {
                       return DropdownMenuItem<String>(child: Text(value), value: value,);
                     }).toList(),
-                    value: _measureForm,
+                    value: _bMeasureForm,
                     onChanged: (newValue) {
                       setState(() {
-                        _measureForm = newValue;
+                        _bMeasureForm = newValue;
                       });
                     },
                   ),
-                  Text((_numberForm == null) ? '' : _numberForm.toString()),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child:
+                    ElevatedButton(
+                        onPressed: () => {
+                          setState(() {
+                            _result = converter().toString();
+                          })
+                        },
+
+                        child: Text('Convert')
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                    child: Text((_result == null) ? '' : _result.toString(),
+                    style: TextStyle(
+                      fontSize: 20.0
+                    ),
+                    ),
+                  )
                 ],
               ),
             )
